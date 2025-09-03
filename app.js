@@ -13,12 +13,14 @@ class HealthTracker {
         this.currentExercise = null;
         this.medicineCount = 0;
         this.medicineMaxCount = 2;
+        this.deferredPrompt = null;
         
         this.init();
     }
 
     init() {
         this.registerServiceWorker();
+        this.setupPWAInstall();
         this.setupEventListeners();
         this.loadData();
         this.updateDateDisplay();
@@ -39,6 +41,58 @@ class HealthTracker {
                 console.log('Service Worker 등록 실패:', error);
             }
         }
+    }
+
+    setupPWAInstall() {
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            this.deferredPrompt = e;
+            this.showInstallButton();
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA가 설치되었습니다.');
+            this.hideInstallButton();
+            this.deferredPrompt = null;
+        });
+    }
+
+    showInstallButton() {
+        let installBtn = document.getElementById('installBtn');
+        if (!installBtn) {
+            installBtn = document.createElement('button');
+            installBtn.id = 'installBtn';
+            installBtn.className = 'install-btn';
+            installBtn.innerHTML = '📱 앱 설치';
+            installBtn.addEventListener('click', () => this.installPWA());
+            
+            const header = document.querySelector('.app-header');
+            header.appendChild(installBtn);
+        }
+        installBtn.style.display = 'block';
+    }
+
+    hideInstallButton() {
+        const installBtn = document.getElementById('installBtn');
+        if (installBtn) {
+            installBtn.style.display = 'none';
+        }
+    }
+
+    async installPWA() {
+        if (!this.deferredPrompt) return;
+        
+        this.deferredPrompt.prompt();
+        const { outcome } = await this.deferredPrompt.userChoice;
+        
+        if (outcome === 'accepted') {
+            console.log('사용자가 PWA 설치를 승인했습니다.');
+        } else {
+            console.log('사용자가 PWA 설치를 거부했습니다.');
+        }
+        
+        this.deferredPrompt = null;
+        this.hideInstallButton();
     }
 
     setupEventListeners() {
