@@ -1,0 +1,539 @@
+/* 기본 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* 헤더 */
+.app-header {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.app-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.date-display {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* 탭 네비게이션 */
+.tab-nav {
+    display: flex;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    background: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn.active {
+    color: #2196F3;
+    border-bottom-color: #2196F3;
+}
+
+.tab-btn:hover {
+    background-color: #f8f9fa;
+}
+
+/* 탭 콘텐츠 */
+.tab-container {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+}
+
+.tab-content {
+    display: none;
+    padding: 1rem;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* 섹션 스타일 */
+section {
+    margin-bottom: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* 북마크 운동 */
+.bookmark-exercises {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.exercise-card, .bookmark-card {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.exercise-card:hover, .bookmark-card:hover {
+    transform: translateY(-2px);
+    border-color: #2196F3;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+}
+
+.bookmark-card {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+    border-color: #2196F3;
+}
+
+.exercise-name {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.exercise-count {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2196F3;
+}
+
+/* 운동 목록 */
+.exercise-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+/* 운동 카운터 모달 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: white;
+    margin: 10% auto;
+    padding: 0;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.modal-close:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+/* 카운터 디스플레이 */
+.counter-display {
+    text-align: center;
+    padding: 2rem;
+}
+
+.count-number {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #2196F3;
+    margin-bottom: 0.5rem;
+}
+
+.count-label {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* 카운터 버튼들 */
+.counter-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+}
+
+.count-btn {
+    padding: 1rem 0.5rem;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 50px;
+}
+
+.count-btn:active {
+    transform: scale(0.95);
+    background: #2196F3;
+    color: white;
+    border-color: #2196F3;
+}
+
+.count-btn:hover {
+    border-color: #2196F3;
+    background: #f0f8ff;
+}
+
+/* 모달 액션 */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.btn-primary, .btn-secondary, .btn-bookmark {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 44px;
+}
+
+.btn-primary {
+    background: #2196F3;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1976D2;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+.btn-bookmark {
+    background: #FFC107;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.btn-bookmark.active {
+    background: #FF9800;
+}
+
+/* 식사 일기 */
+.meal-diary {
+    margin-bottom: 1rem;
+}
+
+#mealDiary {
+    width: 100%;
+    min-height: 200px;
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#mealDiary:focus {
+    border-color: #2196F3;
+}
+
+.meal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* 건강 체크 */
+.health-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.health-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+}
+
+.health-btn {
+    padding: 0.8rem 1.5rem;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 44px;
+    min-width: 80px;
+}
+
+.health-btn:hover {
+    background: #1976D2;
+    transform: translateY(-1px);
+}
+
+.health-btn:active {
+    transform: scale(0.95);
+}
+
+.time-display {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.medicine-item {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.medicine-section {
+    width: 100%;
+}
+
+.medicine-label {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+    text-align: center;
+}
+
+.medicine-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.medicine-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.medicine-btn {
+    min-width: 60px;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+}
+
+.fasting-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+}
+
+/* 히스토리 및 통계 */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid #2196F3;
+}
+
+.stat-title {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2196F3;
+}
+
+/* 캘린더 뷰 */
+.calendar-view {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+    .counter-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .bookmark-exercises {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .exercise-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .count-number {
+        font-size: 3rem;
+    }
+    
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 360px) {
+    .counter-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .modal-content {
+        margin: 5% auto;
+        width: 95%;
+    }
+}
+
+/* 터치 최적화 */
+@media (hover: none) {
+    .exercise-card:hover, 
+    .bookmark-card:hover, 
+    .count-btn:hover,
+    .health-btn:hover,
+    .btn-primary:hover,
+    .tab-btn:hover {
+        transform: none;
+        background-color: initial;
+        border-color: initial;
+    }
+}
