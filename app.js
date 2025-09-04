@@ -9,7 +9,6 @@ class HealthTracker {
             { id: 'pushup', name: '푸쉬업', count: 0 },
             { id: 'deadlift', name: '데드리프트', count: 0 }
         ];
-        this.bookmarks = [];
         this.currentExercise = null;
         this.medicineCount = 0;
         this.medicineMaxCount = 2;
@@ -26,7 +25,6 @@ class HealthTracker {
         this.updateDateDisplay();
         this.checkDateChange();
         this.renderExercises();
-        this.renderBookmarks();
         this.loadMealDiary();
         this.loadHealthData();
         this.updateFastingTime();
@@ -44,9 +42,18 @@ class HealthTracker {
     }
 
     setupPWAInstall() {
+        // iOS Safari 감지
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        
+        if (isIOS && !isStandalone) {
+            this.showIOSInstallMessage();
+        }
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             this.deferredPrompt = e;
+            console.log('beforeinstallprompt 이벤트 발생');
             this.showInstallButton();
         });
 
@@ -55,6 +62,18 @@ class HealthTracker {
             this.hideInstallButton();
             this.deferredPrompt = null;
         });
+
+        // 디버깅을 위한 로그
+        setTimeout(() => {
+            if (!this.deferredPrompt) {
+                console.log('beforeinstallprompt 이벤트가 발생하지 않았습니다.');
+                console.log('현재 환경:', {
+                    userAgent: navigator.userAgent,
+                    protocol: window.location.protocol,
+                    isSecureContext: window.isSecureContext
+                });
+            }
+        }, 3000);
     }
 
     showInstallButton() {
@@ -95,6 +114,25 @@ class HealthTracker {
         this.hideInstallButton();
     }
 
+    showIOSInstallMessage() {
+        const message = document.createElement('div');
+        message.className = 'ios-install-message';
+        message.innerHTML = `
+            <div class="ios-install-content">
+                <p>📱 홈 화면에 추가하세요!</p>
+                <p>Safari 하단의 <strong>공유</strong> 버튼 → <strong>홈 화면에 추가</strong></p>
+                <button onclick="this.parentElement.parentElement.remove()">닫기</button>
+            </div>
+        `;
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+            if (message.parentElement) {
+                message.remove();
+            }
+        }, 10000);
+    }
+
     setupEventListeners() {
         // 탭 전환
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -104,7 +142,6 @@ class HealthTracker {
         // 모달 관련
         document.getElementById('closeModal').addEventListener('click', () => this.closeModal());
         document.getElementById('resetCount').addEventListener('click', () => this.resetCount());
-        document.getElementById('bookmarkToggle').addEventListener('click', () => this.toggleBookmark());
 
         // 카운터 버튼
         document.querySelectorAll('.count-btn').forEach(btn => {
@@ -226,39 +263,11 @@ class HealthTracker {
         });
     }
 
-    renderBookmarks() {
-        const bookmarkContainer = document.getElementById('bookmarkExercises');
-        bookmarkContainer.innerHTML = '';
-
-        if (this.bookmarks.length === 0) {
-            bookmarkContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">북마크된 운동이 없습니다.</p>';
-            return;
-        }
-
-        this.bookmarks.forEach(bookmarkId => {
-            const exercise = this.exercises.find(ex => ex.id === bookmarkId);
-            if (exercise) {
-                const bookmarkCard = document.createElement('div');
-                bookmarkCard.className = 'bookmark-card';
-                bookmarkCard.innerHTML = `
-                    <div class="exercise-name">${exercise.name}</div>
-                    <div class="exercise-count">${exercise.count}회</div>
-                `;
-                bookmarkCard.addEventListener('click', () => this.openExerciseModal(exercise));
-                bookmarkContainer.appendChild(bookmarkCard);
-            }
-        });
-    }
 
     openExerciseModal(exercise) {
         this.currentExercise = exercise;
         document.getElementById('exerciseTitle').textContent = exercise.name;
         document.getElementById('currentCount').textContent = exercise.count;
-        
-        const bookmarkBtn = document.getElementById('bookmarkToggle');
-        const isBookmarked = this.bookmarks.includes(exercise.id);
-        bookmarkBtn.textContent = isBookmarked ? '★' : '☆';
-        bookmarkBtn.classList.toggle('active', isBookmarked);
         
         document.getElementById('exerciseModal').style.display = 'block';
     }
@@ -273,7 +282,6 @@ class HealthTracker {
             this.currentExercise.count += increment;
             document.getElementById('currentCount').textContent = this.currentExercise.count;
             this.renderExercises();
-            this.renderBookmarks();
             this.saveData();
         }
     }
@@ -283,35 +291,10 @@ class HealthTracker {
             this.currentExercise.count = 0;
             document.getElementById('currentCount').textContent = 0;
             this.renderExercises();
-            this.renderBookmarks();
             this.saveData();
         }
     }
 
-    toggleBookmark() {
-        if (!this.currentExercise) return;
-
-        const exerciseId = this.currentExercise.id;
-        const isBookmarked = this.bookmarks.includes(exerciseId);
-
-        if (isBookmarked) {
-            this.bookmarks = this.bookmarks.filter(id => id !== exerciseId);
-        } else {
-            if (this.bookmarks.length < 5) {
-                this.bookmarks.push(exerciseId);
-            } else {
-                alert('최대 5개까지만 북마크할 수 있습니다.');
-                return;
-            }
-        }
-
-        const bookmarkBtn = document.getElementById('bookmarkToggle');
-        bookmarkBtn.textContent = this.bookmarks.includes(exerciseId) ? '★' : '☆';
-        bookmarkBtn.classList.toggle('active', this.bookmarks.includes(exerciseId));
-
-        this.renderBookmarks();
-        this.saveData();
-    }
 
     handleMealDiaryInput(e) {
         if (e.key === 'Enter') {
@@ -571,7 +554,6 @@ class HealthTracker {
     saveData() {
         const data = {
             exercises: this.exercises,
-            bookmarks: this.bookmarks,
             medicineCount: this.medicineCount
         };
         localStorage.setItem(`healthTracker_${this.currentDate}`, JSON.stringify(data));
@@ -582,10 +564,6 @@ class HealthTracker {
         
         if (data.exercises) {
             this.exercises = data.exercises;
-        }
-        
-        if (data.bookmarks) {
-            this.bookmarks = data.bookmarks;
         }
         
         if (data.medicineCount !== undefined) {
