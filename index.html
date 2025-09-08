@@ -28,34 +28,60 @@
             <div class="date-display" id="currentDate"></div>
         </header>
 
-        <main class="content-container">
-            <!-- 운동 기록 -->
-            <section class="exercises-section">
-                <div class="section-header">
-                    <h2>운동 목록</h2>
-                    <button id="resetAllBtn" class="btn-secondary">초기화</button>
-                </div>
-                <div class="exercise-list" id="exerciseList">
-                    <!-- 운동 목록이 동적으로 추가됩니다 -->
-                </div>
-            </section>
+        <!-- 탭 네비게이션 -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="logging">운동 기록</button>
+            <button class="tab-btn" data-tab="history">기록 보기</button>
+        </nav>
 
-            <!-- 식사 기록 -->
-            <section class="meal-log-section">
-                <div class="section-header">
-                    <h2>식사 기록</h2>
-                </div>
-                <textarea id="mealLogBox" rows="8" placeholder="식사 기록..."></textarea>
-                <div class="meal-buttons-grid">
-                    <button class="meal-btn" data-meal="현재시간">시간</button>
-                    <button class="meal-btn" data-meal="물">물</button>
-                    <button class="meal-btn" data-meal="커피">커피</button>
-                    <button class="meal-btn" data-meal="제로음료">제로음료</button>
-                    <button class="meal-btn" data-meal="일반식">일반식</button>
-                    <button class="meal-btn" data-meal="키토식">키토식</button>
-                    <button class="meal-btn" data-meal="더티식">더티식</button>
-                </div>
-            </section>
+        <!-- 탭 콘텐츠 -->
+        <main class="tab-container">
+            <!-- 기록하기 탭 -->
+            <div class="tab-content active" id="logging-tab">
+                <!-- 운동 기록 -->
+                <section class="exercises-section">
+                    <div class="section-header">
+                        <h2>운동 목록</h2>
+                        <button id="resetAllBtn" class="btn-secondary">초기화</button>
+                    </div>
+                    <div class="exercise-list" id="exerciseList">
+                        <!-- 운동 목록이 동적으로 추가됩니다 -->
+                    </div>
+                </section>
+
+                <!-- 식사 기록 -->
+                <section class="meal-log-section">
+                    <div class="section-header">
+                        <h2>식사 기록</h2>
+                    </div>
+                    <textarea id="mealLogBox" rows="8" placeholder="식사 기록..."></textarea>
+                    <div class="meal-buttons-grid">
+                        <button class="meal-btn" data-meal="현재시간">시간</button>
+                        <button class="meal-btn" data-meal="물">물</button>
+                        <button class="meal-btn" data-meal="커피">커피</button>
+                        <button class="meal-btn" data-meal="제로음료">제로음료</button>
+                        <button class="meal-btn" data-meal="일반식">일반식</button>
+                        <button class="meal-btn" data-meal="키토식">키토식</button>
+                        <button class="meal-btn" data-meal="더티식">더티식</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 기록 보기 탭 -->
+            <div class="tab-content" id="history-tab">
+                <section class="history-section">
+                    <h2>기록 달력</h2>
+                    <div id="calendarView"></div>
+                    <div id="dailyRecordView" class="daily-record-view">
+                        <h3>선택된 날짜의 기록</h3>
+                        <div id="recordDisplay"></div>
+                        <div class="daily-stats">
+                            <p>총 운동 횟수: <span id="dailyTotalCount">0</span>회</p>
+                            <p>연속 운동 일수: <span id="dailyStreak">0</span>일</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </main>
     </div>
 
@@ -78,8 +104,7 @@
                 <button class="count-btn" data-increment="50">+50</button>
             </div>
             <div class="modal-actions">
-                <button id="resetCount" class="btn-secondary">초기화</button>
-            </div>
+                <button id="resetCount" class="btn-secondary">초기화</n            </div>
         </div>
     </div>
 

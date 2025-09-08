@@ -97,6 +97,54 @@ body {
     to { transform: translateY(0); }
 }
 
+/* 탭 네비게이션 */
+.tab-nav {
+    display: flex;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    background: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn.active {
+    color: #2196F3;
+    border-bottom-color: #2196F3;
+}
+
+.tab-btn:hover {
+    background-color: #f8f9fa;
+}
+
+/* 탭 콘텐츠 */
+.tab-container {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+}
+
+.tab-content {
+    display: none;
+    padding: 1rem;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.tab-content.active {
+    display: block;
+}
+
 /* Main Content */
 .content-container {
     flex: 1;
@@ -374,6 +422,112 @@ section h2 {
     }
 }
 
+/* 달력 스타일 */
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.calendar-nav button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #2196F3;
+}
+
+.calendar-weekdays, .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.calendar-weekdays div {
+    font-weight: bold;
+    color: #555;
+    padding: 0.8rem; /* Consistent padding with day-cell */
+}
+
+.day-cell {
+    padding: 0.8rem;
+    border-radius: 8px;
+    background-color: #f0f8ff;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.day-cell:hover {
+    background-color: #e0f2f7;
+}
+
+.day-cell.empty {
+    background-color: transparent;
+    cursor: default;
+}
+
+.day-cell.has-data {
+    background-color: #FF4444; /* Red for days with data */
+    color: white; /* Change text color for contrast */
+    font-weight: bold;
+}
+
+/* 일별 기록 표시 스타일 */
+.daily-record-view {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.daily-record-view h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+    text-align: center;
+}
+
+.daily-record-view h4 {
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #2196F3;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.3rem;
+}
+
+.daily-record-view ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.daily-record-view ul li {
+    padding: 0.3rem 0;
+    color: #555;
+}
+
+.daily-record-view pre {
+    background-color: #eef;
+    padding: 0.8rem;
+    border-radius: 8px;
+    white-space: pre-wrap; /* Preserve whitespace and wrap */
+    word-wrap: break-word;
+    font-size: 0.9rem;
+    color: #444;
+    margin-top: 0.5rem;
+}
+
 /* 식사 기록 */
 .meal-log-section textarea {
     width: 100%;
@@ -418,4 +572,22 @@ section h2 {
     background: #2196F3;
     color: white;
     border-color: #2196F3;
+}
+
+.daily-stats {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+
+.daily-stats p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.daily-stats span {
+    font-weight: bold;
+    color: #2196F3;
 }

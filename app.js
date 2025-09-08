@@ -130,6 +130,11 @@ class HealthTracker {
     }
 
     setupEventListeners() {
+        // 탭 전환
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+        });
+
         document.getElementById('resetAllBtn').addEventListener('click', () => this.resetAllExercises());
 
         // 모달 관련
@@ -161,6 +166,21 @@ class HealthTracker {
         document.getElementById('mealLogBox').addEventListener('input', () => this.saveMealLog());
     }
 
+    switchTab(tabName) {
+        // 탭 버튼 활성화 상태 변경
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+        // 탭 콘텐츠 표시 변경
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+
+        // 히스토리 탭일 때 달력 렌더링
+        if (tabName === 'history') {
+            this.renderCalendar(new Date().getFullYear(), new Date().getMonth());
+        }
+    }
+
     updateDateDisplay() {
         const today = new Date();
         const options = { 
@@ -188,6 +208,7 @@ class HealthTracker {
         const dayData = {
             date: this.currentDate,
             exercises: this.exercises.map(ex => ({ ...ex })),
+            mealLog: document.getElementById('mealLogBox').value // Add meal log
         };
         
         const history = JSON.parse(localStorage.getItem('healthTrackerHistory') || '[]');
@@ -256,6 +277,171 @@ class HealthTracker {
             this.renderExercises();
             this.saveData();
         }
+    }
+
+    renderCalendar(year, month) {
+        const calendarView = document.getElementById('calendarView');
+        calendarView.innerHTML = ''; // Clear previous calendar
+
+        const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+        const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const numDays = lastDay.getDate();
+        const startDay = firstDay.getDay(); // 0 for Sunday, 1 for Monday, etc.
+
+        // Month navigation
+        const nav = document.createElement('div');
+        nav.className = 'calendar-nav';
+        nav.innerHTML = `
+            <button id="prevMonth">&lt;</button>
+            <span>${year}년 ${monthNames[month]}</span>
+            <button id="nextMonth">&gt;</button>
+        `;
+        calendarView.appendChild(nav);
+
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            const newMonth = month === 0 ? 11 : month - 1;
+            const newYear = month === 0 ? year - 1 : year;
+            this.renderCalendar(newYear, newMonth);
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            const newMonth = month === 11 ? 0 : month + 1;
+            const newYear = month === 11 ? year + 1 : year;
+            this.renderCalendar(newYear, newMonth);
+        });
+
+        // Day names
+        const dayNamesRow = document.createElement('div');
+        dayNamesRow.className = 'calendar-weekdays';
+        dayNames.forEach(day => {
+            const dayCell = document.createElement('div');
+            dayCell.textContent = day;
+            dayNamesRow.appendChild(dayCell);
+        });
+        calendarView.appendChild(dayNamesRow);
+
+        // Days grid
+        const daysGrid = document.createElement('div');
+        daysGrid.className = 'calendar-grid';
+
+        // Empty cells for days before the 1st
+        for (let i = 0; i < startDay; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'day-cell empty';
+            daysGrid.appendChild(emptyCell);
+        }
+
+        // Day cells
+        for (let day = 1; day <= numDays; day++) {
+            const dayCell = document.createElement('div');
+            dayCell.className = 'day-cell';
+            dayCell.textContent = day;
+            
+            const fullDate = new Date(year, month, day);
+            const dateString = fullDate.toISOString().split('T')[0];
+
+            // Check if there's data for this day
+            const history = JSON.parse(localStorage.getItem('healthTrackerHistory') || '[]');
+            const dayData = history.find(item => item.date === dateString);
+            if (dayData) {
+                dayCell.classList.add('has-data');
+            }
+
+            dayCell.addEventListener('click', () => this.displayDailyRecord(dateString));
+            daysGrid.appendChild(dayCell);
+        }
+        calendarView.appendChild(daysGrid);
+
+        // Display today's record by default when calendar loads
+        const todayString = new Date().toISOString().split('T')[0];
+        this.displayDailyRecord(todayString);
+    }
+
+    displayDailyRecord(dateString) {
+        const recordDisplay = document.getElementById('recordDisplay');
+        recordDisplay.innerHTML = ''; // Clear previous record
+
+        const history = JSON.parse(localStorage.getItem('healthTrackerHistory') || '[]');
+        const dayData = history.find(item => item.date === dateString);
+
+        const selectedDateHeader = document.querySelector('#dailyRecordView h3');
+        selectedDateHeader.textContent = `${dateString} 기록`;
+
+        if (dayData) {
+            // Display Exercise Data
+            const exerciseHeader = document.createElement('h4');
+            exerciseHeader.textContent = '운동 기록';
+            recordDisplay.appendChild(exerciseHeader);
+
+            const exerciseList = document.createElement('ul');
+            dayData.exercises.forEach(ex => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${ex.name}: ${ex.count}회`;
+                exerciseList.appendChild(listItem);
+            });
+            recordDisplay.appendChild(exerciseList);
+
+            // Display Meal Log
+            const mealHeader = document.createElement('h4');
+            mealHeader.textContent = '식사 기록';
+            recordDisplay.appendChild(mealHeader);
+
+            const mealContent = document.createElement('pre'); // Use <pre> to preserve formatting
+            mealContent.textContent = dayData.mealLog || '기록 없음';
+            recordDisplay.appendChild(mealContent);
+
+            // Display Statistics
+            const totalCount = this.calculateTotalExerciseCount(dayData);
+            const history = JSON.parse(localStorage.getItem('healthTrackerHistory') || '[]');
+            const streak = this.calculateConsecutiveStreak(history, dateString);
+
+            document.getElementById('dailyTotalCount').textContent = totalCount;
+            document.getElementById('dailyStreak').textContent = streak;
+
+        } else {
+            recordDisplay.textContent = '선택된 날짜에 기록이 없습니다.';
+            // Clear stats if no data
+            document.getElementById('dailyTotalCount').textContent = '0';
+            document.getElementById('dailyStreak').textContent = '0';
+        }
+    }
+
+    calculateTotalExerciseCount(dayData) {
+        return dayData.exercises.reduce((sum, ex) => sum + ex.count, 0);
+    }
+
+    calculateConsecutiveStreak(history, targetDateString) {
+        const sortedHistory = [...history].sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort descending
+        let streak = 0;
+        let currentDate = new Date(targetDateString);
+
+        for (const dayData of sortedHistory) {
+            const dayDate = new Date(dayData.date);
+            // Only consider days on or before the target date
+            if (dayDate.getTime() > currentDate.getTime()) {
+                continue;
+            }
+
+            const exerciseTotal = dayData.exercises.reduce((sum, ex) => sum + ex.count, 0);
+
+            if (exerciseTotal > 0) {
+                // Check if it's the current day or the day before
+                if (dayDate.toISOString().split('T')[0] === currentDate.toISOString().split('T')[0]) {
+                    streak++;
+                    currentDate.setDate(currentDate.getDate() - 1); // Move to the previous day
+                } else {
+                    // If there's a gap, break the streak
+                    break;
+                }
+            } else {
+                // If no exercise on this day, break the streak
+                break;
+            }
+        }
+        return streak;
     }
 
     resetAllExercises() {
