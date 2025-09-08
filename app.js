@@ -11,6 +11,8 @@ class HealthTracker {
         ];
         this.currentExercise = null;
         this.deferredPrompt = null;
+        this.startX = 0; // For swipe detection
+        this.threshold = 50; // Swipe distance threshold
         
         this.init();
     }
@@ -164,6 +166,38 @@ class HealthTracker {
             btn.addEventListener('click', (e) => this.handleMealButtonClick(e));
         });
         document.getElementById('mealLogBox').addEventListener('input', () => this.saveMealLog());
+
+        // 스와이프 제스처
+        const tabContainer = document.querySelector('.tab-container');
+        tabContainer.addEventListener('touchstart', (e) => this.handleTouchStart(e));
+        tabContainer.addEventListener('touchmove', (e) => this.handleTouchMove(e));
+        tabContainer.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+    }
+
+    handleTouchStart(e) {
+        this.startX = e.touches[0].clientX;
+    }
+
+    handleTouchMove(e) {
+        // Prevent scrolling while swiping horizontally
+        // e.preventDefault(); // This might prevent vertical scrolling too, be careful
+    }
+
+    handleTouchEnd(e) {
+        const endX = e.changedTouches[0].clientX;
+        const diffX = endX - this.startX;
+
+        const currentTab = document.querySelector('.tab-btn.active').dataset.tab;
+
+        if (diffX > this.threshold) { // Swipe right (previous tab)
+            if (currentTab === 'history') {
+                this.switchTab('logging');
+            }
+        } else if (diffX < -this.threshold) { // Swipe left (next tab)
+            if (currentTab === 'logging') {
+                this.switchTab('history');
+            }
+        }
     }
 
     switchTab(tabName) {
