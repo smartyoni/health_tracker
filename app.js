@@ -335,6 +335,11 @@ class HealthTracker {
         }
 
         // Day cells
+        const today = new Date(); // Get current date once
+        const currentDayOfMonth = today.getDate();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+
         for (let day = 1; day <= numDays; day++) {
             const dayCell = document.createElement('div');
             dayCell.className = 'day-cell';
@@ -342,6 +347,11 @@ class HealthTracker {
             
             const fullDate = new Date(year, month, day);
             const dateString = fullDate.toISOString().split('T')[0];
+
+            // Check if it's the current day
+            if (day === currentDayOfMonth && month === currentMonth && year === currentYear) {
+                dayCell.classList.add('current-day');
+            }
 
             // Check if there's data for this day
             const history = JSON.parse(localStorage.getItem('healthTrackerHistory') || '[]');
