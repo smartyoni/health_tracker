@@ -65,52 +65,43 @@ body {
     transform: translateY(0);
 }
 
-/* 탭 네비게이션 */
-.tab-nav {
-    display: flex;
-    background: white;
-    border-bottom: 1px solid #e0e0e0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+.ios-install-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    z-index: 1000;
+    padding: 1rem;
+    text-align: center;
+    animation: slideDown 0.3s ease;
 }
 
-.tab-btn {
-    flex: 1;
-    padding: 1rem;
+.ios-install-content p {
+    margin: 0.5rem 0;
+}
+
+.ios-install-content button {
+    background: #2196F3;
+    color: white;
     border: none;
-    background: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #666;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-bottom: 3px solid transparent;
 }
 
-.tab-btn.active {
-    color: #2196F3;
-    border-bottom-color: #2196F3;
+@keyframes slideDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
 }
 
-.tab-btn:hover {
-    background-color: #f8f9fa;
-}
-
-/* 탭 콘텐츠 */
-.tab-container {
+/* Main Content */
+.content-container {
     flex: 1;
     overflow-y: auto;
-    position: relative;
-}
-
-.tab-content {
-    display: none;
     padding: 1rem;
-    height: 100%;
-    overflow-y: auto;
-}
-
-.tab-content.active {
-    display: block;
 }
 
 /* 섹션 스타일 */
@@ -122,25 +113,34 @@ section {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
 section h2 {
     font-size: 1.2rem;
-    margin-bottom: 1rem;
     color: #333;
+    margin-bottom: 0;
 }
 
-/* 북마크 운동 */
-.bookmark-exercises {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
+#resetAllBtn {
+    flex: none; /* Prevent the button from growing */
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    background-color: #FF9800;
+    color: white;
+    border: none;
+    border-radius: 20px; /* Match the app install button's shape */
 }
 
-.exercise-card, .bookmark-card {
+.exercise-card {
     background: #f8f9fa;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
-    padding: 1rem;
+    padding: 0.8rem;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -150,15 +150,10 @@ section h2 {
     justify-content: center;
 }
 
-.exercise-card:hover, .bookmark-card:hover {
+.exercise-card:hover {
     transform: translateY(-2px);
     border-color: #2196F3;
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
-}
-
-.bookmark-card {
-    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
-    border-color: #2196F3;
 }
 
 .exercise-name {
@@ -176,8 +171,8 @@ section h2 {
 /* 운동 목록 */
 .exercise-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
 }
 
 /* 운동 카운터 모달 */
@@ -298,7 +293,7 @@ section h2 {
     padding: 1rem;
 }
 
-.btn-primary, .btn-secondary, .btn-bookmark {
+.btn-primary, .btn-secondary {
     flex: 1;
     padding: 1rem;
     border: none;
@@ -329,176 +324,6 @@ section h2 {
     background: #e0e0e0;
 }
 
-.btn-bookmark {
-    background: #FFC107;
-    color: white;
-    font-size: 1.5rem;
-}
-
-.btn-bookmark.active {
-    background: #FF9800;
-}
-
-/* 식사 일기 */
-.meal-diary {
-    margin-bottom: 1rem;
-}
-
-#mealDiary {
-    width: 100%;
-    min-height: 200px;
-    padding: 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-family: inherit;
-    line-height: 1.6;
-    resize: vertical;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-#mealDiary:focus {
-    border-color: #2196F3;
-}
-
-.meal-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-/* 건강 체크 */
-.health-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.health-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border: 2px solid #e0e0e0;
-}
-
-.health-btn {
-    padding: 0.8rem 1.5rem;
-    background: #2196F3;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    min-height: 44px;
-    min-width: 80px;
-}
-
-.health-btn:hover {
-    background: #1976D2;
-    transform: translateY(-1px);
-}
-
-.health-btn:active {
-    transform: scale(0.95);
-}
-
-.time-display {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-    background: white;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-}
-
-.medicine-item {
-    flex-direction: column;
-    align-items: stretch;
-}
-
-.medicine-section {
-    width: 100%;
-}
-
-.medicine-label {
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #333;
-    text-align: center;
-}
-
-.medicine-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-}
-
-.medicine-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem;
-    background: white;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-}
-
-.medicine-btn {
-    min-width: 60px;
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-}
-
-.fasting-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-weight: 600;
-}
-
-/* 히스토리 및 통계 */
-.stats-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.stat-card {
-    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
-    padding: 1.5rem;
-    border-radius: 12px;
-    text-align: center;
-    border: 2px solid #2196F3;
-}
-
-.stat-title {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-}
-
-.stat-value {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #2196F3;
-}
-
-/* 캘린더 뷰 */
-.calendar-view {
-    background: white;
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-}
-
 /* 애니메이션 */
 @keyframes fadeIn {
     from { opacity: 0; }
@@ -522,20 +347,8 @@ section h2 {
         grid-template-columns: repeat(3, 1fr);
     }
     
-    .bookmark-exercises {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .exercise-list {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
     .count-number {
         font-size: 3rem;
-    }
-    
-    .stats-cards {
-        grid-template-columns: 1fr;
     }
 }
 
@@ -553,13 +366,56 @@ section h2 {
 /* 터치 최적화 */
 @media (hover: none) {
     .exercise-card:hover, 
-    .bookmark-card:hover, 
     .count-btn:hover,
-    .health-btn:hover,
-    .btn-primary:hover,
-    .tab-btn:hover {
+    .btn-primary:hover {
         transform: none;
         background-color: initial;
         border-color: initial;
     }
+}
+
+/* 식사 기록 */
+.meal-log-section textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease;
+    margin-top: 1rem;
+}
+
+.meal-log-section textarea:focus {
+    border-color: #2196F3;
+}
+
+.meal-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.meal-btn {
+    padding: 0.8rem 0.5rem;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.meal-btn:active {
+    transform: scale(0.95);
+    background: #2196F3;
+    color: white;
+    border-color: #2196F3;
 }
